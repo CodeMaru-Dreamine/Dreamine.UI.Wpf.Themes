@@ -1,0 +1,369 @@
+﻿<!--  ■ VsLibrary.UIComponent.Styles.VsButtonStyle.xaml  -->
+<!--  \file VsButtonStyle.xaml  -->
+<!--  \brief VsButton style/template. Supports IconSize/IconMargin/IconStretch + Shadow DPs.  -->
+
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:Dreamine.UI.Wpf.Converters"
+    xmlns:local="clr-namespace:Dreamine.UI.Wpf.Controls">
+
+    <!--  \brief Converts null to Collapsed (non-null to Visible).  -->
+    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+
+    <Style TargetType="{x:Type local:DreamineButton}">
+        <!--  \brief Default button style.  -->
+        <Setter Property="Padding" Value="16,6" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Background" Value="#2C3E50" />
+
+        <!--  \brief Default icon values.  -->
+        <Setter Property="IconSize" Value="20" />
+        <Setter Property="IconMargin" Value="0,0,4,0" />
+        <Setter Property="IconStretch" Value="Uniform" />
+
+        <!--  \brief Default shadow values.  -->
+        <Setter Property="UseShadow" Value="False" />
+        <Setter Property="ShadowBlurRadius" Value="18" />
+        <Setter Property="ShadowOpacity" Value="0.55" />
+        <Setter Property="ShadowDepth" Value="6" />
+        <Setter Property="ShadowDirection" Value="90" />
+        <Setter Property="ShadowColor" Value="#FF000000" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:DreamineButton}">
+                    <!--  \brief Root container: prevents shadow clipping (unless parent clips).  -->
+                    <Grid
+                        x:Name="Root"
+                        Background="Transparent"
+                        ClipToBounds="False"
+                        Focusable="False"
+                        SnapsToDevicePixels="False">
+
+                        <!--
+                            \brief Shadow container.
+                            This Border wraps the actual visual area (background + border),
+                            and applies DropShadowEffect here.
+                            Background is kept transparent to avoid unwanted fill.
+                        -->
+                        <Border
+                            x:Name="ShadowContainer"
+                            Background="Transparent"
+                            CornerRadius="{Binding ShadowBlurRadius, RelativeSource={RelativeSource TemplatedParent}}"
+                            SnapsToDevicePixels="True">
+
+                            <!--  \brief Main visuals (gradient/overlays/content).  -->
+                            <Grid
+                                x:Name="VisualRoot"
+                                Background="Transparent"
+                                ClipToBounds="False">
+
+                                <!--  \brief Solid background layer (used when UseSolidBackground=True).  -->
+                                <Border
+                                    x:Name="SolidBackground"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="12"
+                                    Visibility="Collapsed" />
+
+                                <!--  \brief Gradient background layer.  -->
+                                <Border x:Name="GradientBackground" CornerRadius="12">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Offset="0.0" Color="{Binding ShineColor.(SolidColorBrush.Color), RelativeSource={RelativeSource TemplatedParent}, FallbackValue=#5DADE2}" />
+                                            <GradientStop Offset="0.5" Color="{Binding ShineColorBottom.(SolidColorBrush.Color), RelativeSource={RelativeSource TemplatedParent}, FallbackValue=Transparent}" />
+                                            <GradientStop Offset="0.5" Color="{Binding BackgroundTop.(SolidColorBrush.Color), RelativeSource={RelativeSource TemplatedParent}, FallbackValue=Transparent}" />
+                                            <GradientStop Offset="1.0" Color="{Binding Background.(SolidColorBrush.Color), RelativeSource={RelativeSource TemplatedParent}, FallbackValue=#2C3E50}" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+
+                                <!--  \brief Hover/Pressed overlays.  -->
+                                <Border
+                                    x:Name="HoverOverlay"
+                                    Background="#20FFFFFF"
+                                    CornerRadius="12"
+                                    IsHitTestVisible="False"
+                                    Visibility="Collapsed" />
+
+                                <Border
+                                    x:Name="PressOverlay"
+                                    Background="#35FFFFFF"
+                                    CornerRadius="12"
+                                    IsHitTestVisible="False"
+                                    Visibility="Collapsed" />
+
+                                <!--
+                                    \brief Selected overlay (background highlight).
+                                    Used by SelectedVisualMode = BackgroundOnly / Both.
+                                -->
+                                <Border
+                                    x:Name="SelectedOverlay"
+                                    Background="{TemplateBinding SelectedBackgroundOverlay}"
+                                    CornerRadius="12"
+                                    IsHitTestVisible="False"
+                                    Visibility="Collapsed" />
+
+                                <!--  \brief Border + content container.  -->
+                                <Border
+                                    x:Name="MainBorder"
+                                    Background="Transparent"
+                                    BorderBrush="#2980B9"
+                                    BorderThickness="1"
+                                    CornerRadius="12"
+                                    Focusable="False">
+
+                                    <Grid>
+                                        <!--  \brief Normal layout.  -->
+                                        <Viewbox>
+                                            <Grid x:Name="LayoutGridNormal" Margin="{TemplateBinding Padding}">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <!--  \brief Bitmap icon (ImageSource).  -->
+                                                <Image
+                                                    x:Name="IconImage"
+                                                    Width="{TemplateBinding IconSize}"
+                                                    Height="{TemplateBinding IconSize}"
+                                                    Margin="{TemplateBinding IconMargin}"
+                                                    VerticalAlignment="Center"
+                                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                                    Source="{TemplateBinding ImageSource}"
+                                                    Stretch="{TemplateBinding IconStretch}"
+                                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource, Converter={StaticResource NullToVisibilityConverter}}" />
+
+                                                <!--  \brief Vector icon (IconPath).  -->
+                                                <Path
+                                                    x:Name="IconPath"
+                                                    Width="{TemplateBinding IconSize}"
+                                                    Height="{TemplateBinding IconSize}"
+                                                    Margin="{TemplateBinding IconMargin}"
+                                                    VerticalAlignment="Center"
+                                                    Data="{TemplateBinding IconPath}"
+                                                    Fill="{TemplateBinding Foreground}"
+                                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IconPath, Converter={StaticResource NullToVisibilityConverter}}" />
+
+                                                <ContentPresenter
+                                                    x:Name="contentPresenter"
+                                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                    Content="{TemplateBinding Content}"
+                                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                            </Grid>
+                                        </Viewbox>
+
+                                        <!--  \brief Full layout.  -->
+                                        <Viewbox>
+                                            <Grid
+                                                x:Name="LayoutGridFull"
+                                                Margin="{TemplateBinding Padding}"
+                                                Visibility="Collapsed">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+
+                                                <Image
+                                                    x:Name="IconImageFull"
+                                                    Grid.Row="0"
+                                                    Width="{TemplateBinding IconSize}"
+                                                    Height="{TemplateBinding IconSize}"
+                                                    Margin="{TemplateBinding IconMargin}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    RenderOptions.BitmapScalingMode="HighQuality"
+                                                    Source="{TemplateBinding ImageSource}"
+                                                    Stretch="{TemplateBinding IconStretch}"
+                                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource, Converter={StaticResource NullToVisibilityConverter}}" />
+
+                                                <Path
+                                                    x:Name="IconPathFull"
+                                                    Grid.Row="0"
+                                                    Grid.RowSpan="2"
+                                                    Width="{TemplateBinding IconSize}"
+                                                    Height="{TemplateBinding IconSize}"
+                                                    Margin="{TemplateBinding IconMargin}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Top"
+                                                    Data="{TemplateBinding IconPath}"
+                                                    Fill="{TemplateBinding Foreground}"
+                                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IconPath, Converter={StaticResource NullToVisibilityConverter}}" />
+
+                                                <ContentPresenter
+                                                    x:Name="contentPresenterFull"
+                                                    Grid.Row="1"
+                                                    Grid.RowSpan="2"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Bottom"
+                                                    Content="{TemplateBinding Content}"
+                                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                            </Grid>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+
+                        <Trigger Property="UseShadow" Value="True">
+                            <!--  \brief Prevent overlap: neighbor buttons should not cover the shadow.  -->
+                            <Setter TargetName="ShadowContainer" Property="Panel.ZIndex" Value="1" />
+                            <Setter Property="ShadowDirection" Value="315" />
+                            <Setter TargetName="ShadowContainer" Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect
+                                        BlurRadius="{Binding ShadowBlurRadius, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Direction="{Binding ShadowDirection, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Opacity="{Binding ShadowOpacity, RelativeSource={RelativeSource TemplatedParent}}"
+                                        ShadowDepth="{Binding ShadowDepth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        Color="{Binding ShadowColor, RelativeSource={RelativeSource TemplatedParent}}" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+
+                        <!--  \brief Remove Effect explicitly when UseShadow is false.  -->
+                        <Trigger Property="UseShadow" Value="False">
+                            <Setter TargetName="ShadowContainer" Property="Panel.ZIndex" Value="0" />
+                            <Setter TargetName="ShadowContainer" Property="Effect" Value="{x:Null}" />
+                        </Trigger>
+
+                        <!--  \brief Solid background mode.  -->
+                        <Trigger Property="UseSolidBackground" Value="True">
+                            <Setter TargetName="SolidBackground" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="GradientBackground" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+
+                        <!--  \brief Hover state.  -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="#1ABC9C" />
+                            <Setter TargetName="HoverOverlay" Property="Visibility" Value="Visible" />
+                        </Trigger>
+
+                        <!--  \brief Pressed state.  -->
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="#16A085" />
+                            <Setter TargetName="PressOverlay" Property="Visibility" Value="Visible" />
+                        </Trigger>
+
+                        <!--  \brief Disabled state.  -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#AAA" />
+                            <Setter TargetName="GradientBackground" Property="Opacity" Value="0.3" />
+                            <Setter TargetName="SolidBackground" Property="Opacity" Value="0.3" />
+                            <Setter TargetName="HoverOverlay" Property="Opacity" Value="0.0" />
+                            <Setter TargetName="PressOverlay" Property="Opacity" Value="0.0" />
+                            <Setter TargetName="SelectedOverlay" Property="Opacity" Value="0.0" />
+                        </Trigger>
+
+                        <!--  \brief ImagePosition: Top.  -->
+                        <Trigger Property="ImagePosition" Value="Top">
+                            <Setter TargetName="IconImage" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="IconImage" Property="Grid.ColumnSpan" Value="2" />
+                            <Setter TargetName="IconPath" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="IconPath" Property="Grid.ColumnSpan" Value="2" />
+                            <Setter TargetName="contentPresenter" Property="Grid.Row" Value="1" />
+                            <Setter TargetName="contentPresenter" Property="Grid.ColumnSpan" Value="2" />
+                        </Trigger>
+
+                        <!--  \brief ImagePosition: Left.  -->
+                        <Trigger Property="ImagePosition" Value="Left">
+                            <Setter TargetName="IconImage" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="IconImage" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="IconImage" Property="Grid.RowSpan" Value="2" />
+                            <Setter TargetName="IconPath" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="IconPath" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="IconPath" Property="Grid.RowSpan" Value="2" />
+                            <Setter TargetName="contentPresenter" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="contentPresenter" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="contentPresenter" Property="Grid.RowSpan" Value="2" />
+                        </Trigger>
+
+                        <!--  \brief ImagePosition: Right.  -->
+                        <Trigger Property="ImagePosition" Value="Right">
+                            <Setter TargetName="IconImage" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="IconImage" Property="Grid.RowSpan" Value="2" />
+                            <Setter TargetName="IconPath" Property="Grid.Column" Value="1" />
+                            <Setter TargetName="IconPath" Property="Grid.RowSpan" Value="2" />
+                            <Setter TargetName="contentPresenter" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="contentPresenter" Property="Grid.RowSpan" Value="2" />
+                        </Trigger>
+
+                        <!--  \brief ImagePosition: Bottom.  -->
+                        <Trigger Property="ImagePosition" Value="Bottom">
+                            <Setter TargetName="IconImage" Property="Grid.Row" Value="1" />
+                            <Setter TargetName="IconImage" Property="Grid.ColumnSpan" Value="2" />
+                            <Setter TargetName="IconPath" Property="Grid.Row" Value="1" />
+                            <Setter TargetName="IconPath" Property="Grid.ColumnSpan" Value="2" />
+                            <Setter TargetName="contentPresenter" Property="Grid.Row" Value="0" />
+                            <Setter TargetName="contentPresenter" Property="Grid.ColumnSpan" Value="2" />
+                        </Trigger>
+
+                        <!--  \brief ImagePosition: Full.  -->
+                        <Trigger Property="ImagePosition" Value="Full">
+                            <Setter TargetName="LayoutGridNormal" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="LayoutGridFull" Property="Visibility" Value="Visible" />
+                        </Trigger>
+
+                        <!--  =====================================================  -->
+                        <!--  \brief Selection visuals (IsSelected + SelectedVisualMode).  -->
+                        <!--  =====================================================  -->
+
+                        <!--  \brief IsSelected + BorderOnly: apply border only.  -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="SelectedVisualMode" Value="BorderOnly" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{Binding SelectedBorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="MainBorder" Property="BorderThickness" Value="{Binding SelectedBorderThickness, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter Property="FontWeight" Value="ExtraBold" />
+                            <Setter TargetName="SelectedOverlay" Property="Visibility" Value="Collapsed" />
+                        </MultiTrigger>
+
+                        <!--  \brief IsSelected + BackgroundOnly: apply background overlay only.  -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="SelectedVisualMode" Value="BackgroundOnly" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="SelectedOverlay" Property="Visibility" Value="Visible" />
+                            <Setter Property="FontWeight" Value="ExtraBold" />
+                        </MultiTrigger>
+
+                        <!--  \brief IsSelected + Both: apply border + background overlay.  -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="SelectedVisualMode" Value="Both" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="MainBorder" Property="BorderBrush" Value="{Binding SelectedBorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="MainBorder" Property="BorderThickness" Value="{Binding SelectedBorderThickness, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="SelectedOverlay" Property="Visibility" Value="Visible" />
+                            <Setter Property="FontWeight" Value="ExtraBold" />
+                        </MultiTrigger>
+
+                        <!--  \brief IsSelected = False: ensure selection overlay is hidden.  -->
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter TargetName="SelectedOverlay" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

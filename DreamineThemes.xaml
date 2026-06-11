@@ -1,0 +1,30 @@
+<!-- DreamineThemes.xaml — 모든 Dreamine UI 스타일을 한 번에 포함하는 통합 ResourceDictionary -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Controls -->
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineButtonStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineCheckBoxStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineCheckLedStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineComboBoxStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineDataGridStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineExpanderStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineGridStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineImageStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineLabelStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineListBoxStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreaminePasswordBoxStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineRadioButtonStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineTabControlStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineTextBlockStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineTextBoxStyle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineTimeSpinnerStyle.xaml" />
+        <!-- MessageBox -->
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineMessageBoxButtonStyle.xaml" />
+        <!-- Equipment -->
+        <ResourceDictionary Source="pack://application:,,,/Dreamine.UI.Wpf.Themes;component/DreamineKeyPadStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

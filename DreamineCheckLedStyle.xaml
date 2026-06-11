@@ -1,0 +1,254 @@
+﻿<!--
+    =======================================================================
+    Themes/Generic.xaml  —  VsCheckLed를 VsLedDot 스타일로 렌더링
+    규칙:
+    * Setter.Value 에 Binding/TemplateBinding 절대 금지
+    * 바인딩이 필요하면 템플릿 본문(엘리먼트의 속성)에서 TemplateBinding/Binding 사용
+    =======================================================================
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:Dreamine.UI.Wpf.Converters"
+    xmlns:local="clr-namespace:Dreamine.UI.Wpf.Controls">
+
+    <!--  컨버터  -->
+    <conv:LedInnerDiameterConverter x:Key="LedInnerDiameterConverter" />
+    <conv:LedPositionConverter x:Key="LedPositionConverter" />
+
+    <!--  리소스(정적 값만 사용)  -->
+    <RadialGradientBrush x:Key="VsLed_GlassBrush" Center="0.5,0.5" GradientOrigin="0.5,0.5" RadiusX="0.9" RadiusY="0.9">
+        <GradientStop Offset="0.0" Color="#66FFFFFF" />
+        <GradientStop Offset="0.7" Color="#22FFFFFF" />
+        <GradientStop Offset="1.0" Color="#00FFFFFF" />
+    </RadialGradientBrush>
+
+    <!--  ON 상태의 코어 (녹색)  -->
+    <RadialGradientBrush x:Key="VsLed_OnCoreBrush" Center="0.5,0.5" GradientOrigin="0.5,0.5" RadiusX="0.6" RadiusY="0.6">
+        <GradientStop Offset="0.00" Color="darkcyan" />
+        <GradientStop Offset="0.60" Color="#FF1FD36B" />
+        <GradientStop Offset="1.00" Color="#00FFFFFF" />
+    </RadialGradientBrush>
+
+    <!--  OFF 상태의 코어 (거의 투명하게, 또는 아주 연한 회색으로 처리)  -->
+    <!--  이미지에서는 코어가 아예 없는 비어있는 원처럼 보입니다. Opacity를 0으로 설정하거나, 아주 연한 색으로 합니다.  -->
+    <SolidColorBrush x:Key="VsLed_OffCoreBrush" Color="#FFFFFFFF" />
+    <!--  완전히 투명  -->
+    <!-- <SolidColorBrush x:Key="VsLed_OffCoreBrush" Color="#1AFFFFFF"/> -->
+    <!--  아주 연한 흰색으로 보이고 싶다면  -->
+
+
+    <!--  ON 상태의 링 (녹색)  -->
+    <SolidColorBrush x:Key="VsLed_RingOnBrush" Color="#7DD9B7" />
+    <!--  코어와 비슷한 녹색으로 변경  -->
+    <!--  OFF 상태의 링 (이미지에서는 옅은 회색 또는 아예 없음)  -->
+    <SolidColorBrush x:Key="VsLed_RingOffBrush" Color="lightseagreen" />
+    <!--  옅은 회색으로 변경  -->
+    <!-- <SolidColorBrush x:Key="VsLed_RingOffBrush" Color="#00FFFFFF"/> -->
+    <!--  링도 보이지 않게 하려면  -->
+
+
+    <DropShadowEffect
+        x:Key="VsLed_Glow"
+        BlurRadius="8"
+        Opacity="0.7"
+        ShadowDepth="0"
+        Color="#5538D66B" />
+    <!--  OFF 상태의 그림자 (없음)  -->
+    <DropShadowEffect
+        x:Key="VsLed_NoGlow"
+        BlurRadius="0"
+        Opacity="0"
+        ShadowDepth="0"
+        Color="Transparent" />
+
+    <!--  VsCheckLed 기본 스타일  -->
+    <Style TargetType="{x:Type local:DreamineCheckLed}">
+        <!--  링 Stroke/Thickness 기본값은 컨트롤 DP로부터 TemplateBinding  -->
+        <!--  여기의 StrokeBrush와 StrokeThickness는 IsOn 트렌지션의 기본값이 됩니다.  -->
+        <Setter Property="StrokeBrush" Value="{StaticResource VsLed_RingOffBrush}" />
+        <!--  기본은 OFF 상태의 링으로 시작  -->
+        <Setter Property="StrokeThickness" Value="1" />
+        <!--  링 두께를 조금 줄여 자연스럽게  -->
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <!--  OnOuterFill, OnInnerFill 등은 이 스타일에서 직접 Fill을 설정하므로 사용되지 않습니다.  -->
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:DreamineCheckLed}">
+                    <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                        <Canvas>
+
+                            <!-- \brief Ring (outer stroke) -->
+                            <Ellipse
+                x:Name="Ring"
+                Width="{TemplateBinding Diameter}"
+                Height="{TemplateBinding Diameter}"
+                Fill="{x:Null}"
+                Stroke="{TemplateBinding StrokeBrush}"
+                StrokeThickness="{TemplateBinding StrokeThickness}">
+                                <Canvas.Left>
+                                    <MultiBinding Converter="{StaticResource LedPositionConverter}" ConverterParameter="OuterLeft">
+                                        <Binding Path="Corner" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="EdgeOffset" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Canvas.Left>
+                                <Canvas.Top>
+                                    <MultiBinding Converter="{StaticResource LedPositionConverter}" ConverterParameter="OuterTop">
+                                        <Binding Path="Corner" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="ActualHeight" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="EdgeOffset" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Canvas.Top>
+                            </Ellipse>
+
+                            <!-- \brief Core (inner glow) -->
+                            <Ellipse
+                x:Name="Core"
+                Effect="{StaticResource VsLed_NoGlow}"
+                Fill="{StaticResource VsLed_OffCoreBrush}"
+                RenderTransformOrigin="0.5,0.5"
+                StrokeThickness="0"
+                Opacity="1.0">
+
+                                <!-- \brief IMPORTANT: x:Name을 ScaleTransform에 주지 않는다 (compile-safe) -->
+                                <Ellipse.RenderTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                                </Ellipse.RenderTransform>
+
+                                <!-- \brief Size -->
+                                <Ellipse.Width>
+                                    <MultiBinding Converter="{StaticResource LedInnerDiameterConverter}">
+                                        <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="InnerScale" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Ellipse.Width>
+                                <Ellipse.Height>
+                                    <MultiBinding Converter="{StaticResource LedInnerDiameterConverter}">
+                                        <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="InnerScale" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Ellipse.Height>
+
+                                <!-- \brief Position -->
+                                <Canvas.Left>
+                                    <MultiBinding Converter="{StaticResource LedPositionConverter}" ConverterParameter="InnerLeft">
+                                        <Binding Path="Corner" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="EdgeOffset" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="InnerScale" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Canvas.Left>
+                                <Canvas.Top>
+                                    <MultiBinding Converter="{StaticResource LedPositionConverter}" ConverterParameter="InnerTop">
+                                        <Binding Path="Corner" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="ActualHeight" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="EdgeOffset" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="InnerScale" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Canvas.Top>
+                            </Ellipse>
+
+                            <!-- \brief Glass overlay -->
+                            <Ellipse
+                x:Name="Glass"
+                Width="{TemplateBinding Diameter}"
+                Height="{TemplateBinding Diameter}"
+                Fill="{StaticResource VsLed_GlassBrush}">
+                                <Canvas.Left>
+                                    <MultiBinding Converter="{StaticResource LedPositionConverter}" ConverterParameter="OuterLeft">
+                                        <Binding Path="Corner" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="EdgeOffset" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Canvas.Left>
+                                <Canvas.Top>
+                                    <MultiBinding Converter="{StaticResource LedPositionConverter}" ConverterParameter="OuterTop">
+                                        <Binding Path="Corner" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="ActualHeight" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="Diameter" RelativeSource="{RelativeSource TemplatedParent}" />
+                                        <Binding Path="EdgeOffset" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </MultiBinding>
+                                </Canvas.Top>
+                            </Ellipse>
+
+                        </Canvas>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+
+                        <!-- \brief OFF -->
+                        <Trigger Property="IsOn" Value="False">
+                            <Setter TargetName="Core" Property="Fill" Value="{StaticResource VsLed_OffCoreBrush}" />
+                            <Setter TargetName="Core" Property="Effect" Value="{StaticResource VsLed_NoGlow}" />
+                            <Setter TargetName="Ring" Property="Stroke" Value="{StaticResource VsLed_RingOffBrush}" />
+                            <Setter TargetName="Ring" Property="StrokeThickness" Value="1" />
+                        </Trigger>
+
+                        <!-- \brief ON -->
+                        <Trigger Property="IsOn" Value="True">
+                            <Setter TargetName="Core" Property="Fill" Value="{StaticResource VsLed_OnCoreBrush}" />
+                            <Setter TargetName="Core" Property="Effect" Value="{StaticResource VsLed_Glow}" />
+                            <Setter TargetName="Ring" Property="Stroke" Value="{StaticResource VsLed_RingOnBrush}" />
+                            <Setter TargetName="Ring" Property="StrokeThickness" Value="2" />
+                        </Trigger>
+
+                        <!-- \brief PULSE: IsOn && IsPulse -->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsOn, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
+                                <Condition Binding="{Binding IsPulse, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+
+                            <MultiDataTrigger.EnterActions>
+                                <!-- \brief Begin pulse storyboard -->
+                                <BeginStoryboard x:Name="PulseBegin">
+                                    <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+
+                                        <!-- \brief ScaleX -->
+                                        <DoubleAnimation
+                            Storyboard.TargetName="Core"
+                            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                            From="0.92"
+                            To="1.00"
+                            Duration="0:0:0.7" />
+
+                                        <!-- \brief ScaleY -->
+                                        <DoubleAnimation
+                            Storyboard.TargetName="Core"
+                            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                            From="0.92"
+                            To="1.00"
+                            Duration="0:0:0.7" />
+
+                                        <!-- \brief Opacity pulse -->
+                                        <DoubleAnimation
+                            Storyboard.TargetName="Core"
+                            Storyboard.TargetProperty="Opacity"
+                            From="0.85"
+                            To="1.0"
+                            Duration="0:0:0.7" />
+
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+
+                            <MultiDataTrigger.ExitActions>
+                                <!-- \brief Stop pulse storyboard -->
+                                <StopStoryboard BeginStoryboardName="PulseBegin" />
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
