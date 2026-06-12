@@ -1,8 +1,8 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:Dreamine.UI.Wpf.Converters"
-    xmlns:local="clr-namespace:Dreamine.UI.Wpf.Controls"
+    xmlns:converters="clr-namespace:Dreamine.UI.Wpf.Converters;assembly=Dreamine.UI.Wpf"
+    xmlns:local="clr-namespace:Dreamine.UI.Wpf.Controls;assembly=Dreamine.UI.Wpf.Controls"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <!--  닫기 버튼 표시용 bool → Visibility 변환기  -->

@@ -1,7 +1,7 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Dreamine.UI.Wpf.Controls">
+    xmlns:local="clr-namespace:Dreamine.UI.Wpf.Controls;assembly=Dreamine.UI.Wpf.Controls">
     <!--  라디오버튼 배경 그라데이션  -->
     <LinearGradientBrush x:Key="RadioOuterGradient" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Offset="0" Color="#FFF" />

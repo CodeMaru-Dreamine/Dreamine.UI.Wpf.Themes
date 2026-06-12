@@ -1,7 +1,7 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Dreamine.UI.Wpf.Controls">
+    xmlns:local="clr-namespace:Dreamine.UI.Wpf.Controls;assembly=Dreamine.UI.Wpf.Controls">
 
     <Style TargetType="{x:Type local:DreamineListBox}">
         <Setter Property="BorderBrush" Value="Gray" />

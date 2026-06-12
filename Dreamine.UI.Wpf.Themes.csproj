@@ -20,6 +20,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\UI.Wpf\Dreamine.UI.Wpf.csproj" />
 		<ProjectReference Include="..\UI.Wpf.Controls\Dreamine.UI.Wpf.Controls.csproj" />
 	</ItemGroup>
 
