@@ -77,7 +77,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:DreamineCheckLed}">
-                    <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                    <Grid x:Name="Root" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
                         <Canvas>
 
                             <!-- \brief Ring (outer stroke) -->
@@ -200,51 +200,10 @@
                             <Setter TargetName="Ring" Property="StrokeThickness" Value="2" />
                         </Trigger>
 
-                        <!-- \brief PULSE: IsOn && IsPulse -->
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsOn, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
-                                <Condition Binding="{Binding IsPulse, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-
-                            <MultiDataTrigger.EnterActions>
-                                <!-- \brief Begin pulse storyboard -->
-                                <BeginStoryboard x:Name="PulseBegin">
-                                    <Storyboard AutoReverse="True" RepeatBehavior="Forever">
-
-                                        <!-- \brief ScaleX -->
-                                        <DoubleAnimation
-                            Storyboard.TargetName="Core"
-                            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                            From="0.92"
-                            To="1.00"
-                            Duration="0:0:0.7" />
-
-                                        <!-- \brief ScaleY -->
-                                        <DoubleAnimation
-                            Storyboard.TargetName="Core"
-                            Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                            From="0.92"
-                            To="1.00"
-                            Duration="0:0:0.7" />
-
-                                        <!-- \brief Opacity pulse -->
-                                        <DoubleAnimation
-                            Storyboard.TargetName="Core"
-                            Storyboard.TargetProperty="Opacity"
-                            From="0.85"
-                            To="1.0"
-                            Duration="0:0:0.7" />
-
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </MultiDataTrigger.EnterActions>
-
-                            <MultiDataTrigger.ExitActions>
-                                <!-- \brief Stop pulse storyboard -->
-                                <StopStoryboard BeginStoryboardName="PulseBegin" />
-                            </MultiDataTrigger.ExitActions>
-                        </MultiDataTrigger>
+                        <!-- \brief Pulse animation is now driven directly by DreamineCheckLed code
+                             (BeginAnimation on the control's own Opacity) instead of a template
+                             trigger/storyboard, so it no longer depends on template namescope
+                             and always works regardless of which template/theme is applied. -->
 
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
